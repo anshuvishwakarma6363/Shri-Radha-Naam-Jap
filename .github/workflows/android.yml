@@ -1,3 +1,4 @@
+
 name: Build Shri Radha Naam Jap APK
 
 on:
@@ -14,6 +15,19 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Extract Android project ZIP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          mkdir extracted
+          ZIP_FILE=$(find . -maxdepth 1 -name '*.zip' | head -n 1)
+          unzip -q "$ZIP_FILE" -d extracted
+          PROJECT_DIR=$(dirname "$(find extracted -name settings.gradle | head -n 1)")
+          cp -r "$PROJECT_DIR/app" .
+          cp "$PROJECT_DIR/build.gradle" .
+          cp "$PROJECT_DIR/settings.gradle" .
+          cp "$PROJECT_DIR/gradle.properties" .
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -23,12 +37,12 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Gradle
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Install Android SDK 35
+      - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Build APK
