@@ -1,5 +1,5 @@
 
-name: Build Shri Radha Naam Jap APK
+name: Build Shree Radha Naam Jap APK
 
 on:
   workflow_dispatch:
