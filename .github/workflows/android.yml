@@ -22,6 +22,14 @@ jobs:
           unzip -q Shree_Radha_Naam_Jap_Development_V7.zip -d extracted
           cp -R extracted/Shree_Radha_Naam_Jap_Fresh_Project/. .
 
+
+      - name: Fix biometric authenticator references
+        run: |
+          FILE="app/src/main/java/com/shriradha/naamjap/MainActivity.java"
+          sed -i '/import androidx.biometric.BiometricPrompt;/a import androidx.biometric.BiometricManager;' "$FILE"
+          sed -i 's/BiometricPrompt.Authenticators/BiometricManager.Authenticators/g' "$FILE"
+
+
       - name: Set up Java 17
         uses: actions/setup-java@v5
         with:
