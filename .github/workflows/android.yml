@@ -1,5 +1,5 @@
 
-name: Build Shree Radha Naam Jap APK
+name: Build Shree Radha Naam Jap V2 APK
 
 on:
   workflow_dispatch:
@@ -12,21 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Android project ZIP
+      - name: Extract V2 Android project
         run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip
-          mkdir extracted
-          ZIP_FILE=$(find . -maxdepth 1 -name '*.zip' | head -n 1)
-          unzip -q "$ZIP_FILE" -d extracted
-          PROJECT_DIR=$(dirname "$(find extracted -name settings.gradle | head -n 1)")
-          cp -r "$PROJECT_DIR/app" .
-          cp "$PROJECT_DIR/build.gradle" .
-          cp "$PROJECT_DIR/settings.gradle" .
-          cp "$PROJECT_DIR/gradle.properties" .
+          unzip -o Radha_Naam_Jap_V2_GitHub_Upload.zip -d .
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -34,17 +25,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Android SDK
-        run: |
-          SDK_ROOT="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
-          SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -name sdkmanager -type f | head -n 1)
-          yes | "$SDKMANAGER" --licenses || true
-          "$SDKMANAGER" --install "platforms;android-35" "build-tools;35.0.0"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
+      - name: Install Android SDK 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Build APK
         run: gradle --no-daemon assembleDebug
@@ -52,5 +42,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Shree-Radha-Naam-Jap-APK
+          name: Shree-Radha-Naam-Jap-V2-APK
           path: app/build/outputs/apk/debug/app-debug.apk
