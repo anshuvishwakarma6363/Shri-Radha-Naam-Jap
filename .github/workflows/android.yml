@@ -1,5 +1,5 @@
 
-name: Build Shree Radha Naam Jap V2 APK
+name: Build Shree Radha Naam Jap V7
 
 on:
   workflow_dispatch:
@@ -15,11 +15,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract V2 Android project
+      - name: Extract V7 Android project
         run: |
-          unzip -o Radha_Naam_Jap_V2_GitHub_Upload.zip -d .
+          test -f Shree_Radha_Naam_Jap_Development_V7.zip
+          mkdir extracted
+          unzip -q Shree_Radha_Naam_Jap_Development_V7.zip -d extracted
+          cp -R extracted/Shree_Radha_Naam_Jap_Fresh_Project/. .
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -42,5 +45,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Shree-Radha-Naam-Jap-V2-APK
+          name: Shree-Radha-Naam-Jap-V7-APK
           path: app/build/outputs/apk/debug/app-debug.apk
